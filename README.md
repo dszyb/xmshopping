@@ -1,0 +1,3 @@
+# xmshop
+基于SSM+BootStrap的小米商城前后端分离项目的后端项目
+具体说明见小米商城后台项目和Swagger学习辅助文档

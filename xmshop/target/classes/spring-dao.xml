@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+       
+    <!-- 1.关联数据库配置文件 -->
+    <context:property-placeholder location="classpath:database.properties"/>
+    
+    <!-- 2.配置数据源 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.name}"/>
+        <property name="password" value="${jdbc.pwd}"/>
+    </bean>
+
+    <!-- 3.sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+         <!--使用PageHelper集成Spring4-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口注入到spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.cdzy.xmshop.dao"/>
+    </bean>
+
+</beans>
